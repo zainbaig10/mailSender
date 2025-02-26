@@ -19,9 +19,9 @@ app.use(
 );
 
 const companyToMail = {
-  "EXION": "sales@ex-ion.com",
+  "SPBL": "sales@ex-ion.com",
   TEST: "zain.baig98@gmail.com",
-  GZONE: "gzone@uur.co.in",
+  SBPL: "support@sbpl-tc.com",
 };
 
 const transporter = nodemailer.createTransport({
@@ -29,7 +29,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "sales@ex-ion.com",
+    user: "support@sbpl-tc.com",
     pass: "Exion@123",
   },
 });
@@ -37,7 +37,7 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async (to, subject, text) => {
   try {
     await transporter.sendMail({
-      from: "sales@ex-ion.com",
+      from: "support@sbpl-tc.com",
       to,
       subject,
       text,
