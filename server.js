@@ -15,8 +15,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "support@joharperfumes.in", // Your SMTP email
-    pass: "Support@3251", // Your SMTP password
+    user: "support@sbpl-tc.com", // Your SMTP email
+    pass: "Support@3251", // Replace with the actual password
   },
 });
 
@@ -31,8 +31,8 @@ app.post("/sendEmail", async (req, res) => {
     }
 
     const mailOptions = {
-      from: `"Customer Inquiry" <support@joharperfumes.in>`, // Fixed sender
-      to: "support@joharperfumes.in", // Send to your own email
+      from: `"Customer Inquiry" <support@sbpl-tc.com>`, // Sender email
+      to: "support@sbpl-tc.com", // Destination email
       subject: "New Customer Inquiry",
       text: `
         🔹 First Name: ${firstName}
