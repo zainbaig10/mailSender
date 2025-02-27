@@ -15,8 +15,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "sales@ex-ion.com", // Your SMTP email
-    pass: "Exion@123", // Your SMTP password
+    user: "support@sbpl-tc.com", // Your SMTP email
+    pass: "Support@3251", // Your SMTP password
   },
 });
 
@@ -31,7 +31,7 @@ app.post("/sendEmail", async (req, res) => {
     }
 
     const mailOptions = {
-      from: `"Customer Inquiry" <sales@ex-ion.com>`, // Fixed sender
+      from: `"Customer Inquiry" <support@sbpl-tc.com>`, // Fixed sender
       to: "support@sbpl-tc.com", // Destination email
       subject: "New Customer Inquiry",
       text: `Customer Email: ${userEmail}\n\nMessage: ${userMessage}`, // User email is included in the body
