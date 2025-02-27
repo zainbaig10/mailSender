@@ -3,98 +3,48 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import nodemailer from "nodemailer";
 
+const app = express();
 const port = 4000;
 
-const app = express();
+app.use(bodyParser.json());
+app.use(cors());
 
-app.use(bodyParser.json({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-
-const companyToMail = {
-  "SPBL": "sales@ex-ion.com",
-  TEST: "zain.baig98@gmail.com",
-  SBPL: "support@sbpl-tc.com",
-};
-
+// SMTP Configuration (Replace with your actual SMTP details)
 const transporter = nodemailer.createTransport({
-  host: "smtp.hostinger.com",
+  host: "smtp.hostinger.com", // Your SMTP host
   port: 465,
   secure: true,
   auth: {
-    user: "support@sbpl-tc.com",
-    pass: "Exion@123",
+    user: "sales@ex-ion.com", // Your SMTP email
+    pass: "Exion@123", // Your SMTP password
   },
 });
 
-export const sendEmail = async (to, subject, text) => {
-  try {
-    await transporter.sendMail({
-      from: "support@sbpl-tc.com",
-      to,
-      subject,
-      text,
-    });
-    console.log("Email sent successfully");
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw new Error("Failed to send email");
-  }
-};
-
+// API to Send Email
 app.post("/sendEmail", async (req, res) => {
   try {
-    const { name, email, phone, msg, company } = req.body;
+    const { userEmail, userMessage } = req.body;
 
-    // Log the incoming data to check for issues
-    console.log("Received Data:", req.body);
-
-    // Check if all required fields are present
-    if (!name || !email || !phone || !msg || !company) {
-      return res.status(400).json({
-        msg: "Missing required fields: name, email, phone, msg, company.",
-      });
+    // Basic validation
+    if (!userEmail || !userMessage) {
+      return res.status(400).json({ msg: "❌ Email and message are required" });
     }
 
-    // Convert company to uppercase for case-insensitive matching
-    const companyUpper = company.toUpperCase();
+    const mailOptions = {
+      from: `"Customer Inquiry" <sales@ex-ion.com>`, // Fixed sender
+      to: "support@sbpl-tc.com", // Destination email
+      subject: "New Customer Inquiry",
+      text: `Customer Email: ${userEmail}\n\nMessage: ${userMessage}`, // User email is included in the body
+    };
 
-    if (!companyToMail[companyUpper]) {
-      return res.status(400).json({
-        msg: "Invalid company parameter: " + companyUpper,
-      });
-    }
-
-    // Send the email
-    await sendEmail(
-      companyToMail[companyUpper],
-      "You have a new Lead!!",
-      `\n
-        Name: ${name} \n
-        Email: ${email} \n
-        Phone: ${phone} \n
-        Message: ${msg}
-      `
-    );
-
-    return res.status(200).json({
-      msg: "Mail sent successfully",
-    });
+    await transporter.sendMail(mailOptions);
+    return res.status(200).json({ msg: "✅ Email sent successfully" });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      msg: "Error while sending mail",
-    });
+    console.error("❌ Error:", error.message);
+    return res.status(500).json({ msg: "❌ Error while sending email" });
   }
 });
 
-app.listen(4000, () => {
-  console.log(`Server is listening on port ${port}`);
+app.listen(port, () => {
+  console.log(`🚀 Server running on http://localhost:${port}`);
 });
